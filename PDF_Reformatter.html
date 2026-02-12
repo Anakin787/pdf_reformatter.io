@@ -54,27 +54,27 @@
         .verdict-safe { background: #f0fdf4; border: 1px solid #86efac; color: #15803d; }
 
         /* Page 4+: 문장별 정밀 대조 결과 Styles */
-        .content-padding { padding: 32px 36px; }
+        .content-padding { padding: 28px 32px; display: flex; flex-direction: column; }
         .comp-page-title { font-size: 20px; font-weight: 900; color: #1e293b; letter-spacing: -0.5px; }
         .comp-page-subtitle { font-size: 11px; color: #94a3b8; margin-top: 2px; }
-        .comp-divider { height: 3px; background: linear-gradient(to right, #0d9488, #14b8a6); margin: 12px 0 20px 0; border-radius: 2px; }
-        .comp-card { border: 1.5px solid #e2e8f0; border-radius: 10px; overflow: hidden; margin-bottom: 16px; background: white; }
+        .comp-divider { height: 2px; background: linear-gradient(to right, #0d9488, #14b8a6); margin: 8px 0 14px 0; border-radius: 2px; }
+        .comp-card { border: 1.5px solid #e2e8f0; border-radius: 8px; overflow: hidden; margin-bottom: 12px; background: white; flex: 1; display: flex; flex-direction: column; }
         .comp-card-hdr { display: flex; }
-        .comp-card-hdr-l, .comp-card-hdr-r { flex: 1; padding: 7px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 10.5px; font-weight: 700; }
-        .comp-badge { padding: 2px 10px; border-radius: 999px; font-size: 9.5px; font-weight: 700; white-space: nowrap; }
-        .comp-card-body { display: flex; }
-        .comp-card-body-l { flex: 1; padding: 12px 14px; border-right: 1px solid #e2e8f0; font-size: 11.5px; line-height: 1.75; color: #334155; text-align: justify; }
-        .comp-card-body-r { flex: 1; padding: 12px 14px; font-size: 10.5px; line-height: 1.6; color: #475569; display: flex; flex-direction: column; }
-        .comp-src-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 10px; margin: 6px 0; font-size: 10px; line-height: 1.7; }
-        .comp-card-foot { display: flex; justify-content: space-between; align-items: center; padding: 5px 12px; border-top: 1px solid #e2e8f0; font-size: 9.5px; color: #94a3b8; }
-        .comp-db-title { font-weight: 800; font-size: 12.5px; margin-bottom: 4px; color: #1e293b; }
+        .comp-card-hdr-l, .comp-card-hdr-r { flex: 1; padding: 6px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 10px; font-weight: 700; }
+        .comp-badge { padding: 2px 9px; border-radius: 999px; font-size: 9px; font-weight: 700; white-space: nowrap; }
+        .comp-card-body { display: flex; flex: 1; }
+        .comp-card-body-l { flex: 1; padding: 10px 12px; border-right: 1px solid #e2e8f0; font-size: 11px; line-height: 1.7; color: #334155; text-align: justify; }
+        .comp-card-body-r { flex: 1; padding: 10px 12px; font-size: 10px; line-height: 1.6; color: #475569; display: flex; flex-direction: column; }
+        .comp-src-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 6px 10px; margin: 5px 0; font-size: 9.5px; line-height: 1.6; }
+        .comp-card-foot { display: flex; justify-content: space-between; align-items: center; padding: 4px 12px; border-top: 1px solid #e2e8f0; font-size: 9px; color: #94a3b8; }
+        .comp-db-title { font-weight: 800; font-size: 11.5px; margin-bottom: 3px; color: #1e293b; }
         .comp-match-badge { display: inline-block; font-size: 8px; padding: 1px 8px; border-radius: 999px; font-weight: 600; }
         /* Green: 문헌 표절 */
         .card-plag .comp-card-hdr-l { background: #0d9488; color: white; }
         .card-plag .comp-card-hdr-r { background: #f0fdfa; color: #0d9488; border-left: 1px solid #ccfbf1; }
         .card-plag .comp-badge-l { background: #065f46; color: white; }
         .card-plag .comp-badge-r { background: #0d9488; color: white; }
-        .card-plag .comp-quote { border-left: 3px solid #0d9488; padding: 6px 10px; margin: 6px 0; color: #115e59; font-size: 10.5px; line-height: 1.6; background: #f0fdfa; border-radius: 0 4px 4px 0; }
+        .card-plag .comp-quote { border-left: 3px solid #0d9488; padding: 5px 10px; margin: 5px 0; color: #115e59; font-size: 9.5px; line-height: 1.6; background: #f0fdfa; border-radius: 0 4px 4px 0; }
         .card-plag .hl { color: #065f46; font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
         .card-plag .comp-match-badge { background: #ccfbf1; color: #0d9488; }
         /* Orange: AI 유사도 */
@@ -82,7 +82,7 @@
         .card-ai .comp-card-hdr-r { background: #fff7ed; color: #ea580c; border-left: 1px solid #fed7aa; }
         .card-ai .comp-badge-l { background: #9a3412; color: white; }
         .card-ai .comp-badge-r { background: #ea580c; color: white; }
-        .card-ai .comp-quote { border-left: 3px solid #ea580c; padding: 6px 10px; margin: 6px 0; color: #7c2d12; font-size: 10.5px; line-height: 1.6; background: #fff7ed; border-radius: 0 4px 4px 0; }
+        .card-ai .comp-quote { border-left: 3px solid #ea580c; padding: 5px 10px; margin: 5px 0; color: #7c2d12; font-size: 9.5px; line-height: 1.6; background: #fff7ed; border-radius: 0 4px 4px 0; }
         .card-ai .hl { color: #9a3412; font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
         .card-ai .comp-match-badge { background: #fed7aa; color: #ea580c; }
         
@@ -523,11 +523,11 @@
                                     <div class="comp-src-box" v-if="comp.source">
                                         <div v-if="comp.source.author"><b>저자 :</b> {{ comp.source.author }}</div>
                                         <div v-if="comp.source.publisher"><b>발행 :</b> {{ comp.source.publisher }}</div>
+                                        <div v-if="comp.source.url"><b>URL :</b> <a :href="comp.source.url" target="_blank" rel="noopener" style="color:#3b82f6;word-break:break-all;text-decoration:underline;">{{ comp.source.url }}</a></div>
                                     </div>
                                     <div class="comp-quote" v-if="comp.source && comp.source.matchedText">"{{ comp.source.matchedText }}"</div>
                                     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:6px;">
                                         <span style="font-size:9px;color:#94a3b8;">{{ (comp.source && comp.source.fullReference) || '' }}</span>
-                                        <span class="comp-match-badge">CopyClean Matching DB</span>
                                     </div>
                                 </template>
                                 <!-- AI 유사도 -->
@@ -863,6 +863,8 @@ ${fullText.substring(0, 3000)}
 - "AI 유사도", "AI 생성 의심", "GPT 의심" 등으로 표시된 항목은 type="ai_similarity"
 - 문헌/논문/출처 기반 유사도는 type="plagiarism"
 
+⚠️ 절대 규칙: "비교문서정보" 표는 완전히 무시하세요. 이 표는 검사문서/비교문서의 메타정보(문서제목, 파일형식, 등록일, 문서종류 등)를 보여주는 별도의 정보 테이블입니다. 이 표의 내용은 절대로 비교 항목(comparisons)으로 추출하지 마세요. 이 표 안의 URL도 추출하지 마세요. 오직 문장별 대조 비교 카드에서만 데이터를 추출하세요.
+
 추출 항목:
 1. type: "plagiarism" 또는 "ai_similarity"
 2. pageNum: 원본 문서 페이지 번호(숫자). 이미지에 "페이지: Xp" 또는 "X페이지" 형태로 표시됨
@@ -874,6 +876,7 @@ ${fullText.substring(0, 3000)}
    - publisher: 발행처/학교명, 연도 포함 (문헌 표절 시)
    - matchedText: 비교 문헌 또는 AI에서 일치하는 텍스트
    - fullReference: 전체 출처 참조 문자열
+   - url: 문장별 대조 비교 카드의 출처 영역에 표시된 URL/링크만 추출 (비교문서정보 표의 URL은 절대 사용 금지. 없으면 빈 문자열 "")
    - patternType: AI 패턴 유형 (AI 유사도 시, 예: "문장 구조 패턴", "어휘 선택 패턴")
 7. caseRef: 케이스 번호 (있으면)
 
@@ -886,7 +889,7 @@ JSON 출력:
       "similarity": 32,
       "originalText": "원문 전체...",
       "highlightedText": "강조된 부분...",
-      "source": { "author": "저자", "publisher": "발행처 연도", "matchedText": "일치 텍스트...", "fullReference": "전체 출처" },
+      "source": { "author": "저자", "publisher": "발행처 연도", "matchedText": "일치 텍스트...", "fullReference": "전체 출처", "url": "https://..." },
       "caseRef": "CC-1024"
     }
   ]
@@ -897,7 +900,8 @@ JSON 출력:
 2. 비교 결과가 없는 페이지면 빈 배열: {"comparisons": []}
 3. "카피킬러"를 "카피클린"으로, "CopyKiller"를 "CopyClean"으로 대체
 4. 한 페이지에 여러 비교 항목이 있을 수 있습니다
-5. 반드시 JSON만 응답하세요`;
+5. "비교문서정보" 표(검사문서/비교문서의 메타정보 테이블)는 비교 항목이 절대 아닙니다. 이 표 전체를 무시하세요. 이 표 안의 URL, 문서제목, 파일형식 등 어떤 정보도 comparisons에 포함하지 마세요.
+6. 반드시 JSON만 응답하세요`;
 
                         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
                             method: 'POST',
@@ -950,8 +954,8 @@ JSON 출력:
                         const pdf = await loadingTask.promise;
                         console.log("[CopyClean] PDF 파싱 완료, 총 페이지:", pdf.numPages);
                         
-                        // [수정] 10페이지 제한 설정
-                        const maxPages = Math.min(pdf.numPages, 10);
+                        // [수정] 15페이지 제한 설정
+                        const maxPages = Math.min(pdf.numPages, 15);
                         
                         let fullTextForRate = "";
                         const summaryPageImages = []; // 1-2페이지 이미지 저장 (메타데이터 추출용)
@@ -1120,8 +1124,8 @@ JSON 출력:
                                 allComparisons.push(...processed);
                             }
                         }
-                        // 페이지당 2개씩 분배
-                        const ITEMS_PER_PAGE = 2;
+                        // 페이지당 4개씩 분배
+                        const ITEMS_PER_PAGE = 4;
                         for (let i = 0; i < allComparisons.length; i += ITEMS_PER_PAGE) {
                             contentPages.value.push({
                                 comparisons: allComparisons.slice(i, i + ITEMS_PER_PAGE)
