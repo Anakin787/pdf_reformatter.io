@@ -72,7 +72,28 @@ const apiKey = "YOUR_GEMINI_API_KEY";
 3. **결과 확인** — 스크롤하여 생성된 리포트 확인
 4. **PDF 저장** — "PDF 다운로드" 버튼 클릭 → 인쇄 대화상자에서 "PDF로 저장" 선택
 
-### 4. 제한 사항
+### 4. 사용자 설정 변경
+
+`PDF_Reformatter.html` 파일에서 아래 항목을 직접 수정할 수 있습니다.
+
+| 항목 | 줄 번호 | 변수명 | 기본값 |
+|------|---------|--------|--------|
+| Gemini API 키 | **515줄** | `apiKey` | `"YOUR_GEMINI_API_KEY"` |
+| 결제 링크 | **518줄** | `paymentLink` | `"https://copyclean.ai/checkout/..."` |
+| 서비스 가격 | **519줄** | `servicePrice` | `295000` (원) |
+
+```javascript
+// 515줄 — API 키
+const apiKey = "YOUR_GEMINI_API_KEY";
+
+// 518줄 — 결제 링크 (QR 코드에도 자동 반영)
+const paymentLink = ref("https://copyclean.ai/checkout/CP-20260201-8829");
+
+// 519줄 — 서비스 가격 (₩ 단위, 콤마 자동 포맷)
+const servicePrice = ref(295000);
+```
+
+### 5. 제한 사항
 
 - Gemini API 무료 등급은 분당 요청 수 제한이 있습니다. 대량 분석 시 유료 플랜이 필요할 수 있습니다.
 - 입력 PDF는 카피킬러(또는 유사 표절검사 서비스) 결과 형식에 가까울수록 정확도가 높습니다.

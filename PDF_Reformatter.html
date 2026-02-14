@@ -158,9 +158,17 @@
 
         <main class="py-10 flex flex-col items-center min-h-screen">
             <!-- Initial State -->
-            <div v-if="status === 'idle'" class="text-center py-40 bg-white rounded-3xl shadow-sm border border-slate-200 max-w-2xl mx-auto mt-10 p-10">
+            <div v-if="status === 'idle'"
+                 class="text-center py-40 bg-white rounded-3xl shadow-sm border-2 border-dashed border-slate-300 max-w-2xl mx-auto mt-10 p-10 transition-all duration-200"
+                 :class="{ 'border-blue-500 bg-blue-50': isDragging }"
+                 @dragover.prevent="isDragging = true"
+                 @dragenter.prevent="isDragging = true"
+                 @dragleave.prevent="isDragging = false"
+                 @drop.prevent="handleDrop">
                 <h2 class="text-3xl font-black text-slate-800 mb-4">문서 무결성 진단 시스템</h2>
-                <p class="text-slate-500 mb-8">PDF 파일을 업로드하면 3단계 정밀 분석 리포트(표지, 프리미엄 솔루션, 진단 결과)와 재구성된 본문을 생성합니다.</p>
+                <p class="text-slate-500 mb-6">PDF 파일을 업로드하면 3단계 정밀 분석 리포트(표지, 프리미엄 솔루션, 진단 결과)와 재구성된 본문을 생성합니다.</p>
+                <p v-if="isDragging" class="text-blue-600 font-bold text-lg mb-6">여기에 파일을 놓으세요</p>
+                <p v-else class="text-slate-400 text-sm mb-6">PDF 파일을 드래그하여 놓거나, 아래 버튼을 클릭하세요</p>
                 <button @click="$refs.fileInput.click()" class="bg-slate-900 text-white px-8 py-4 rounded-xl font-bold hover:scale-105 transition-transform">
                     분석 시작하기
                 </button>
@@ -540,6 +548,7 @@
                 const plagiarismRate = ref("0%");
                 const numericRate = ref(0);
                 const status = ref('idle');
+                const isDragging = ref(false);
                 const progressText = ref('');
                 const contentPages = ref([]);
                 const qrCodeUrl = ref('');
@@ -574,6 +583,11 @@
                     const existingChart = Chart.getChart("rateChart");
                     if (existingChart) existingChart.destroy();
 
+                    // 표절률 기준 색상 결정: ≤15% 안전(초록), 16~30% 경고(주황), 31%+ 위험(빨강)
+                    const rate = numericRate.value;
+                    const rateColor = rate <= 15 ? '#10b981' : (rate <= 30 ? '#f97316' : '#dc2626');
+                    const chipColor = rate <= 15 ? '#10b981' : (rate <= 30 ? '#f97316' : '#dc2626');
+
                     // Custom plugin: 바 위에 라벨 표시
                     const barLabelPlugin = {
                         id: 'barLabels',
@@ -585,7 +599,7 @@
                                 c.save();
                                 c.textAlign = 'center';
                                 c.font = 'bold 14px Noto Sans KR';
-                                c.fillStyle = index === 1 ? '#dc2626' : '#64748b';
+                                c.fillStyle = index === 1 ? rateColor : '#64748b';
                                 // 동적 초과 칩 + 퍼센트 텍스트 (현재 문서에만)
                                 const avgRate = 15;
                                 if (index === 1 && value > avgRate) {
@@ -596,7 +610,7 @@
                                     const textW = c.measureText(chipText).width;
                                     const labelW = textW + 16, labelH = 20;
                                     const lx = xPos - labelW / 2, ly = yPos - 52;
-                                    c.fillStyle = '#f97316';
+                                    c.fillStyle = chipColor;
                                     c.beginPath();
                                     c.roundRect(lx, ly, labelW, labelH, 4);
                                     c.fill();
@@ -604,7 +618,7 @@
                                     c.fillText(chipText, xPos, ly + 14);
                                     // 퍼센트: 칩 아래, 바 바로 위
                                     c.font = 'bold 14px Noto Sans KR';
-                                    c.fillStyle = '#dc2626';
+                                    c.fillStyle = rateColor;
                                     c.fillText(value + '%', xPos, yPos - 8);
                                 } else {
                                     c.fillText(value + '%', xPos, yPos - 12);
@@ -621,7 +635,7 @@
                             datasets: [{
                                 label: '표절률 (%)',
                                 data: [15, numericRate.value],
-                                backgroundColor: ['#e2e8f0', '#dc2626'],
+                                backgroundColor: ['#e2e8f0', rateColor],
                                 borderRadius: 4,
                                 barPercentage: 0.6
                             }]
@@ -872,9 +886,21 @@ JSON 출력:
                 // ==========================================
                 // 6. PROCESS: Upload & Analyze
                 // ==========================================
+                const handleDrop = (e) => {
+                    isDragging.value = false;
+                    const file = e.dataTransfer.files[0];
+                    if (file && file.type === 'application/pdf') {
+                        processFile(file);
+                    }
+                };
+
                 const handleFileUpload = async (e) => {
                     const file = e.target.files[0];
                     if (!file) return;
+                    processFile(file);
+                };
+
+                const processFile = async (file) => {
 
                     status.value = 'processing';
                     progressText.value = 'QR 코드 생성 중...';
@@ -1180,7 +1206,7 @@ JSON 출력:
                     totalSentences, aiSimilarSentences, identicalSentences, suspiciousSentences, citationCount,
                     categoryRatios, generatedTimestamp, distributionBar,
                     formattedPrice, getVerdictText, getVerdictClass, getVerdictIcon, getVerdictDesc,
-                    handleFileUpload, downloadPDF, reset
+                    handleFileUpload, handleDrop, isDragging, downloadPDF, reset
                 };
             }
         }).mount('#app');
