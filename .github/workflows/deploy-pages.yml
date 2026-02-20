@@ -39,19 +39,19 @@ jobs:
             rm -f PDF_Reformatter.html.bak
           fi
 
+      - name: Prepare deploy directory
+        run: |
+          mkdir _site
+          cp PDF_Reformatter.html _site/
+          cp -f .nojekyll _site/ 2>/dev/null || true
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
-          exclusion-list: |
-            .git
-            .github
-            .gitignore
-            docs
-            README.md
+          path: _site
 
       - name: Deploy to GitHub Pages
         id: deployment
