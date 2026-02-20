@@ -134,17 +134,24 @@
                 </div>
             </div>
             <div class="flex gap-3">
-                <input type="file" ref="fileInput" class="hidden" accept="application/pdf" @change="handleFileUpload">
-                
+                <input type="file" ref="fileInput" class="hidden" accept="application/pdf" multiple @change="handleFileUpload">
+
                 <div v-if="status === 'idle'">
                     <button @click="$refs.fileInput.click()" class="bg-blue-600 hover:bg-blue-500 px-6 py-2 rounded-full font-bold text-sm transition-all flex items-center gap-2">
                         <span>📄 PDF 업로드 및 분석</span>
                     </button>
                 </div>
-                
+
+                <div v-else-if="status === 'queue'" class="flex items-center gap-3">
+                    <span class="text-xs text-slate-300 font-bold">{{ fileQueue.length }}개 파일 대기중</span>
+                    <button @click="startQueue" class="bg-emerald-600 hover:bg-emerald-500 px-5 py-2 rounded-full font-bold text-sm transition-all">▶ 순차 분석 시작</button>
+                    <button @click="reset" class="px-4 py-2 text-sm text-slate-400 hover:text-white font-bold">취소</button>
+                </div>
+
                 <div v-else-if="status === 'processing'" class="flex items-center gap-3 bg-slate-800 px-4 py-2 rounded-full border border-slate-700">
                     <span class="animate-spin text-blue-500">⏳</span>
                     <span class="text-xs font-bold text-blue-200">{{ progressText }}</span>
+                    <span v-if="fileQueue.length > 0" class="text-xs text-slate-400">({{ currentFileIndex + 1 }} / {{ totalFiles }})</span>
                 </div>
 
                 <div v-else class="flex gap-2">
@@ -159,7 +166,7 @@
         <main class="py-10 flex flex-col items-center min-h-screen">
             <!-- Initial State -->
             <div v-if="status === 'idle'"
-                 class="text-center py-40 bg-white rounded-3xl shadow-sm border-2 border-dashed border-slate-300 max-w-2xl mx-auto mt-10 p-10 transition-all duration-200"
+                 class="text-center py-32 bg-white rounded-3xl shadow-sm border-2 border-dashed border-slate-300 max-w-2xl mx-auto mt-10 p-10 transition-all duration-200"
                  :class="{ 'border-blue-500 bg-blue-50': isDragging }"
                  @dragover.prevent="isDragging = true"
                  @dragenter.prevent="isDragging = true"
@@ -168,10 +175,38 @@
                 <h2 class="text-3xl font-black text-slate-800 mb-4">문서 무결성 진단 시스템</h2>
                 <p class="text-slate-500 mb-6">PDF 파일을 업로드하면 3단계 정밀 분석 리포트(표지, 프리미엄 솔루션, 진단 결과)와 재구성된 본문을 생성합니다.</p>
                 <p v-if="isDragging" class="text-blue-600 font-bold text-lg mb-6">여기에 파일을 놓으세요</p>
-                <p v-else class="text-slate-400 text-sm mb-6">PDF 파일을 드래그하여 놓거나, 아래 버튼을 클릭하세요</p>
+                <p v-else class="text-slate-400 text-sm mb-6">PDF 파일을 드래그하여 놓거나, 아래 버튼을 클릭하세요 (여러 파일 동시 선택 가능)</p>
                 <button @click="$refs.fileInput.click()" class="bg-slate-900 text-white px-8 py-4 rounded-xl font-bold hover:scale-105 transition-transform">
                     분석 시작하기
                 </button>
+            </div>
+
+            <!-- Queue Setup State: 파일별 가격 설정 -->
+            <div v-if="status === 'queue'" class="max-w-2xl mx-auto mt-10 w-full">
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-8">
+                    <h2 class="text-xl font-black text-slate-800 mb-2">파일별 서비스 가격 설정</h2>
+                    <p class="text-slate-500 text-sm mb-6">각 PDF 파일의 2페이지에 표시될 서비스 가격을 입력하세요. 분석 후 자동으로 다운로드됩니다.</p>
+                    <div class="space-y-3">
+                        <div v-for="(item, idx) in fileQueue" :key="idx" class="flex items-center gap-4 bg-slate-50 rounded-xl p-4 border border-slate-200">
+                            <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">{{ idx + 1 }}</div>
+                            <div class="flex-1 min-w-0">
+                                <div class="font-bold text-slate-800 text-sm truncate">{{ item.file.name }}</div>
+                                <div class="text-xs text-slate-400">{{ (item.file.size / 1024).toFixed(0) }} KB</div>
+                            </div>
+                            <div class="flex items-center gap-2 flex-shrink-0">
+                                <span class="text-slate-500 font-bold text-sm">₩</span>
+                                <input type="number" v-model.number="item.price" min="0" step="1000"
+                                    class="w-28 border border-slate-300 rounded-lg px-3 py-1.5 text-sm font-bold text-right focus:outline-none focus:border-blue-500"
+                                    placeholder="295000">
+                            </div>
+                            <button @click="fileQueue.splice(idx, 1)" class="text-slate-400 hover:text-red-500 text-lg font-bold flex-shrink-0">✕</button>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 mt-6">
+                        <button @click="$refs.fileInput.click()" class="flex-1 border border-slate-300 text-slate-600 px-4 py-3 rounded-xl font-bold text-sm hover:bg-slate-50 transition-all">+ 파일 추가</button>
+                        <button @click="startQueue" class="flex-2 bg-slate-900 text-white px-8 py-3 rounded-xl font-bold text-sm hover:bg-slate-700 transition-all">▶ 순차 분석 시작</button>
+                    </div>
+                </div>
             </div>
 
             <!-- Report Preview -->
@@ -512,7 +547,7 @@
                 // ==========================================
                 // 1. CONFIGURATION
                 // ==========================================
-                const apiKey = "AIzaSyD_f1EMwe5YvzKRvIqUyHzYSuz_w34w4y4";
+                const apiKey = "__GEMINI_API_KEY__";
                 const logoDataUrl = "data:image/png;base64,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"; // ⚠️ API Key는 런타임 환경에서 주입됩니다.
                 const originLogoDataUrl = "data:image/png;base64,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";
                 const paymentLink = ref("https://copyclean.ai/checkout/CP-20260201-8829");
@@ -556,6 +591,10 @@
                 const pages = ref([]);
                 const diagnosisSummary = ref([]);
                 const submissionNotes = ref([]);
+                // 다중 파일 큐
+                const fileQueue = ref([]); // [{ file, price }]
+                const currentFileIndex = ref(0);
+                const totalFiles = ref(0);
 
                 // PDF.js Worker 설정 (즉시 실행)
                 if (window.pdfjsLib) {
@@ -886,18 +925,39 @@ JSON 출력:
                 // ==========================================
                 // 6. PROCESS: Upload & Analyze
                 // ==========================================
+                const addFilesToQueue = (files) => {
+                    const pdfs = Array.from(files).filter(f => f.type === 'application/pdf');
+                    if (pdfs.length === 0) return;
+                    for (const f of pdfs) {
+                        fileQueue.value.push({ file: f, price: servicePrice.value });
+                    }
+                    status.value = 'queue';
+                };
+
                 const handleDrop = (e) => {
                     isDragging.value = false;
-                    const file = e.dataTransfer.files[0];
-                    if (file && file.type === 'application/pdf') {
-                        processFile(file);
-                    }
+                    addFilesToQueue(e.dataTransfer.files);
                 };
 
                 const handleFileUpload = async (e) => {
-                    const file = e.target.files[0];
-                    if (!file) return;
-                    processFile(file);
+                    if (!e.target.files || e.target.files.length === 0) return;
+                    addFilesToQueue(e.target.files);
+                    // input 초기화 (같은 파일 재선택 가능)
+                    e.target.value = '';
+                };
+
+                const startQueue = async () => {
+                    if (fileQueue.value.length === 0) return;
+                    totalFiles.value = fileQueue.value.length;
+                    currentFileIndex.value = 0;
+                    for (let i = 0; i < fileQueue.value.length; i++) {
+                        currentFileIndex.value = i;
+                        const { file, price } = fileQueue.value[i];
+                        servicePrice.value = price;
+                        await processFile(file);
+                    }
+                    fileQueue.value = [];
+                    totalFiles.value = 0;
                 };
 
                 const processFile = async (file) => {
@@ -1060,10 +1120,12 @@ JSON 출력:
                         }
 
                         // === STEP 3.5: 페이지별 문장 대조 정밀 분석 ===
+                        // 카피킬러 PDF는 보통 3페이지부터 비교카드가 시작됨 (1~2p는 요약/표지)
+                        const compStartPage = Math.min(3, maxPages);
                         const allComparisons = [];
                         let caseCounter = 1000;
-                        for (let i = 1; i <= maxPages; i++) {
-                            progressText.value = `AI 정밀 분석 중... (${i} / ${maxPages} 페이지)`;
+                        for (let i = compStartPage; i <= maxPages; i++) {
+                            progressText.value = `AI 정밀 분석 중... (${i - compStartPage + 1} / ${maxPages - compStartPage + 1} 페이지)`;
                             const page = await pdf.getPage(i);
                             const viewport = page.getViewport({ scale: 2.0 });
                             const canvas = document.createElement('canvas');
@@ -1072,7 +1134,7 @@ JSON 출력:
                             canvas.width = viewport.width;
                             await page.render({ canvasContext: context, viewport: viewport }).promise;
                             const imageBase64 = canvas.toDataURL('image/jpeg').split(',')[1];
-                            if (i > 1) await new Promise(r => setTimeout(r, 1000));
+                            if (i > compStartPage) await new Promise(r => setTimeout(r, 800));
                             const aiResult = await analyzeWithGemini(imageBase64, i);
                             if (aiResult && aiResult.comparisons && aiResult.comparisons.length > 0) {
                                 const processed = replaceBrand(aiResult.comparisons);
@@ -1093,13 +1155,13 @@ JSON 출력:
                                 allComparisons.push(...processed);
                             }
                         }
-                        // fallback 높이 기반 페이지 분배 (DOM 측정 불필요)
+                        // 높이 기반 페이지 분배
                         const PAGE_HEIGHT = 1123;
                         const PADDING_V = 28 * 2;
                         const FOOTER_H = 30;
                         const FIRST_HEADER_H = 60;
                         const SUB_HEADER_H = 35;
-                        const CARD_H = 200; // 카드 예상 높이
+                        const CARD_H = 240; // 카드 실제 높이 (border+margin 포함)
 
                         const newPages = [];
                         let currentComps = [];
@@ -1155,6 +1217,14 @@ JSON 출력:
                         await nextTick();
                         renderChart();
 
+                        // 파일명을 document.title에 설정 (브라우저 인쇄 시 PDF 파일명으로 사용)
+                        const baseName = file.name.replace(/\.pdf$/i, '');
+                        document.title = baseName;
+
+                        // 차트 등 렌더링 완료 대기 후 자동 다운로드
+                        await new Promise(r => setTimeout(r, 800));
+                        await autoSavePDF(baseName);
+
                     } catch (err) {
                         alert("분석 중 오류가 발생했습니다: " + err.message);
                         status.value = 'idle';
@@ -1164,10 +1234,38 @@ JSON 출력:
                 // ==========================================
                 // 7. PDF EXPORT
                 // ==========================================
+                const autoSavePDF = async (fileName) => {
+                    try {
+                        const { jsPDF } = window.jspdf;
+                        const pdf = new jsPDF({ orientation: 'portrait', unit: 'px', format: [794, 1123], compress: true });
+                        const pageEls = document.querySelectorAll('.pdf-page');
+                        for (let i = 0; i < pageEls.length; i++) {
+                            if (i > 0) pdf.addPage([794, 1123], 'portrait');
+                            const canvas = await html2canvas(pageEls[i], {
+                                scale: 2,
+                                useCORS: true,
+                                allowTaint: true,
+                                backgroundColor: '#ffffff',
+                                width: 794,
+                                height: 1123,
+                                windowWidth: 794,
+                                scrollX: 0,
+                                scrollY: -pageEls[i].getBoundingClientRect().top + window.scrollY
+                            });
+                            const imgData = canvas.toDataURL('image/jpeg', 0.92);
+                            pdf.addImage(imgData, 'JPEG', 0, 0, 794, 1123);
+                        }
+                        pdf.save((fileName || 'report') + '.pdf');
+                    } catch (e) {
+                        console.error('[CopyClean] PDF 저장 오류:', e);
+                        // fallback: 브라우저 인쇄
+                        window.print();
+                    }
+                };
+
                 const downloadPDF = () => {
-                    // ★ html2canvas 완전 포기 - 브라우저 네이티브 인쇄 기능 사용
-                    // 스크롤 오프셋 문제가 원천적으로 불가능
-                    window.print();
+                    const baseName = document.title || 'report';
+                    autoSavePDF(baseName);
                 };
 
                 const reset = () => {
@@ -1194,6 +1292,10 @@ JSON 출력:
                     ];
                     issueDate.value = new Date().toISOString().slice(0, 10).replace(/-/g, '.');
                     generatedTimestamp.value = "";
+                    fileQueue.value = [];
+                    currentFileIndex.value = 0;
+                    totalFiles.value = 0;
+                    document.title = "CopyClean Expert Report System";
                 };
 
                 return {
@@ -1206,7 +1308,8 @@ JSON 출력:
                     totalSentences, aiSimilarSentences, identicalSentences, suspiciousSentences, citationCount,
                     categoryRatios, generatedTimestamp, distributionBar,
                     formattedPrice, getVerdictText, getVerdictClass, getVerdictIcon, getVerdictDesc,
-                    handleFileUpload, handleDrop, isDragging, downloadPDF, reset
+                    handleFileUpload, handleDrop, isDragging, downloadPDF, reset,
+                    fileQueue, currentFileIndex, totalFiles, startQueue
                 };
             }
         }).mount('#app');

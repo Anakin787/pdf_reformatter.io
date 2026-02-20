@@ -59,11 +59,12 @@ python -m http.server 8000
 
 Google Gemini API 키가 필요합니다. [Google AI Studio](https://aistudio.google.com/apikey)에서 무료로 발급받을 수 있습니다.
 
-`PDF_Reformatter.html` 내부의 `apiKey` 변수 값을 본인의 API 키로 교체하세요.
+**GitHub Pages 배포 시:**  
+저장소 **Settings → Secrets and variables → Actions**에서 `GEMINI_API_KEY` 시크릿 또는 변수를 등록하세요.  
+배포 워크플로우가 `__GEMINI_API_KEY__` 플레이스홀더를 자동으로 교체합니다.
 
-```javascript
-const apiKey = "YOUR_GEMINI_API_KEY";
-```
+**로컬 실행 시:**  
+`PDF_Reformatter.html` 내부의 `apiKey` 변수(`__GEMINI_API_KEY__`)를 본인의 API 키로 교체하세요.
 
 ### 3. 사용 흐름
 
