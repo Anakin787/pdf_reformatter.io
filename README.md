@@ -61,7 +61,8 @@ Google Gemini API 키가 필요합니다. [Google AI Studio](https://aistudio.go
 
 **GitHub Pages 배포 시:**  
 저장소 **Settings → Secrets and variables → Actions**에서 `GEMINI_API_KEY` 시크릿 또는 변수를 등록하세요.  
-배포 워크플로우가 `__GEMINI_API_KEY__` 플레이스홀더를 자동으로 교체합니다.
+배포 워크플로우가 `__GEMINI_API_KEY__` 플레이스홀더를 자동으로 교체합니다.  
+루트 URL(`/`) 및 `/PDF_Reformatter.html` 모두 접근 가능합니다.
 
 **로컬 실행 시:**  
 `PDF_Reformatter.html` 내부의 `apiKey` 변수(`__GEMINI_API_KEY__`)를 본인의 API 키로 교체하세요.
@@ -123,6 +124,7 @@ const servicePrice = ref(295000);
 | **QRCode.toDataURL** | 결제 링크를 QR 코드 이미지로 변환. `paymentLink` 변경 시 `watch`로 자동 재생성 |
 | **Tailwind Dark Palette** | `bg-slate-900`, `bg-slate-800` — 다크 테마 카드·배경 |
 | **Vue ref** | `paymentLink`, `servicePrice`, `qrCodeUrl` — 결제 링크·가격 동적 바인딩 |
+| **동적 견적** | `servicePrice` 기반으로 서비스 상세 견적 프로세스(AI 유사도 개선 항목) 자동 계산 |
 
 ### 공통 인프라
 
@@ -140,14 +142,15 @@ const servicePrice = ref(295000);
 ```
 pdf_reformatter/
 ├── PDF_Reformatter.html   # 단일 페이지 앱 (HTML + CSS + JS)
-├── origin.png             # CopyClean 로고 (투명 배경)
+├── origin.png             # CopyClean 로고
 ├── README.md
 └── docs/
     └── daily/             # 작업일지
         ├── 2026-02-11.md
         ├── 2026-02-12.md
         ├── 2026-02-13.md
-        └── 2026-02-14.md
+        ├── 2026-02-14.md
+        └── 2026-02-21.md  # GitHub Pages 개선, 로고 수정, 견적 동적화
 ```
 
 ## 작업일지
